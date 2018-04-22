@@ -1,49 +1,116 @@
 var
 	w = 800,
 	h = 600,
-	wRp = 3, //width referencial padrão
-	hRp = 3, //height referencial padrão
-	wR = 3, // width referencial
-	hR = 3, // height referencial
-	mLp = 10, //margin left referencial padrão
-	mTp = 10, //margin right referencial (padrão)
-	mL = 10,
-	mT = 10,
+	wRp = 4, //width referencial padrão
+	hRp = 4, //height referencial padrão
+	wR = 4, // width referencial
+	hR = 4, // height referencial
+	mLp = 8, //margin left referencial padrão
+	mTp = 8, //margin right referencial (padrão)
+	mL = 8,
+	mT = 8,
 	grad = null,
 	qPh = 0,
 	qPv = 0,
+    elgrad = document.getElementById( 'gradient-princ' ),
 	spcGrad = document.getElementById( 'spc-grad' ),
-	rangeZoom = document.getElementById( 'n-zoom' ),
-	elmov = document.getElementById( 'elmov' );
+    divGrad = spcGrad.parentNode,
+	//rangeZoom = document.getElementById( 'n-zoom' ),
+	portas = {
+        'and': document.getElementById('porta-and'),
+        'or': document.getElementById('porta-or')
+    },
+    px = document.getElementById( 'px' ),
+    py = document.getElementById( 'py' ),
+	selectedElement=null,
+	currentX=0,
+	currentY=0,
+	qtdPortas=[],
+    fat = 1;//( rangeZoom.value / 100 );
 
-elmov.draggable = true;
-
-elmov.ondragstart = function( evt )
+Object.getOwnPropertyNames( portas ).forEach( function(p)
 {
-	console.log( evt );
-	console.log( "Movendo..." );
+    portas[ p ].draggable = true;
+
+    portas[ p ].ondragstart = function( evt )
+    {
+    	evt.dataTransfer.setData( 'tipo-porta', evt.target.getAttribute( 'data-tipo-porta' ) );
+        console.log( "Movendo..." );
+    }
+
+    portas[ p ].ondragend = function( evt )
+    {
+        console.log( "Livre" );
+    }
+});
+
+function portaDragStart( evt )
+{
+    selectedElement = evt.target;
+    currentX = evt.offsetX;
+    currentY = evt.offsetY;
+
+    selectedElement.setAttributeNS(null, "onmousemove", "portaDragOver(evt)");
+    selectedElement.setAttributeNS(null, "onmouseout", "portaMouseOut(evt)");
+    selectedElement.setAttributeNS(null, "onmouseup", "portaMouseOut(evt)");
 }
 
-spcGrad.ondragover = function( evt )
+function portaDragOver( evt )
 {
-	document.getElementById( 'dclientx' ).value = evt.offsetX;
-	document.getElementById( 'dclienty' ).value = evt.offsetY;
+    id = evt.target.id,
+	i = getCrd( mL, evt.offsetX - 20 ),
+	j = getCrd( mT, evt.offsetY - 20 ),
+    x = getPos( mL, i ),
+    y = getPos( mT, j );
+
+    grad.select( '#' + id ).move( x, y );
+
+    currentX = evt.clientX;
+    currentY = evt.clientY;
+}
+
+function portaMouseOut(evt)
+{
+    if(selectedElement != 0)
+    {
+        selectedElement.removeAttributeNS(null, "onmousemove");
+        selectedElement.removeAttributeNS(null, "onmouseout");
+        selectedElement.removeAttributeNS(null, "onmouseup");
+        selectedElement = 0;
+    }
+}
+
+elgrad.ondragover = function( evt )
+{
+	console.log( "clientX = " + evt.offsetX );
+    console.log( "clientY = " + evt.offsetY );
 	return false;
 }
 
-spcGrad.ondrop = function( evt )
+elgrad.ondrop = function( evt )
 {
-	console.log( "Soltou" );
-	console.log( evt );
-
 	var
-		i = getCrd( mL, evt.offsetX ),
-		j = getCrd( mT, evt.offsetY ),
+		i = getCrd( mL, evt.offsetX - 20 ),
+		j = getCrd( mT, evt.offsetY - 20 ),
 		x = getPos( mL, i ),
 		y = getPos( mT, j ),
+		tipoPorta = evt.dataTransfer.getData( 'tipo-porta' ),
 		rect = grad.rect( 40, 40 );
 
-    rect.attr({ fill: '#f06', class: 'teste2', 'data-xp': i, 'data-yp': j });
+	if( qtdPortas[ tipoPorta ] === undefined )
+        qtdPortas[ tipoPorta ] = 1;
+	else
+        qtdPortas[ tipoPorta ] += 1;
+
+    rect.attr({
+		fill: '#f06',
+		class: 'teste2',
+		id:'p_' + tipoPorta + '_' + qtdPortas[ tipoPorta ],
+		'data-tipo-porta': tipoPorta,
+		'data-xp': i,
+		'data-yp': j,
+		'onmousedown': 'portaDragStart(evt)'
+    });
     rect.move( x, y );
 
     console.log( "X = " + x );
@@ -52,23 +119,10 @@ spcGrad.ondrop = function( evt )
     console.log( "j = " + j );
 }
 
-elmov.ondragend = function( evt )
-{
-	console.log( "Livre" );
-}
-
-rangeZoom.onchange = function()
-{
-	if( this.value >= 40 && this.value <= 100 )
-		resizeScreen();
-}
-
-function onMouseOverHole(){}
-
 function resizeScreen()
 {
-	w = spcGrad.offsetWidth - 30;
-	h = spcGrad.offsetHeight;
+	//w = spcGrad.offsetWidth - 60;
+	//h = spcGrad.offsetHeight;
 
 	grad = SVG( 'gradient-princ' ).size( w, h );
 	resizeGrid();
@@ -76,29 +130,50 @@ function resizeScreen()
 
 function resizeGrid()
 {
-	var fat = ( rangeZoom.value / 100 );
-
 	//Apaga tudo da tela para reinserir
-	document.getElementById( 'gradient-princ' ).innerHTML = "";
+    elgrad.innerHTML = "";
 
-	mL = mLp * fat;
-	mT = mTp * fat;
+	//mL = mLp * fat;
+	//mT = mTp * fat;
+
+	var posX, posY;
 
 	wR = wRp * fat;
 	hR = hRp * fat;
 
-	qPh = Math.ceil( ( w / ( wR + mL ) ) );
-	qPv = Math.ceil( ( h / ( hR + mT ) ) );
+	qPh = px.value;
+	qPv = py.value;
 
 	for( i = 0; i < qPh; i++ )
 		for( j = 0; j < qPv; j++ )
 		{
 			var rect = grad.rect( wR, hR );
 
-			rect.attr({ fill: '#f06', class: 'teste', 'data-xp': i, 'data-yp': j });
-			rect.move( getPos( mL, i ), getPos( mT, j ) );
+            posX = getPos( mL, i );
+            posY = getPos( mT, j );
+
+			rect.attr({
+				fill: '#f06',
+				class: 'pin',
+				'data-xp': i,
+				'data-yp': j
+			});
+			rect.move( posX, posY );
 		}
+
+	grad.size( posX + 2 * mL, posY + 2 * mT );
 }
+
+px.onchange = function(){ resizeGrid(); }
+py.onchange = function(){ resizeGrid(); }
+
+/*rangeZoom.onchange = function()
+{
+    fat = ( this.value * 4 / 100 );
+	divGrad.style.zoom = fat;
+    console.log( "h = " + elgrad.clientHeight );
+    console.log( "w = " + elgrad.clientWidth );
+}*/
 
 // ( x, y )
 function getPos( m, t )
@@ -114,19 +189,6 @@ function getCrd( m, pos )
 // x - mL = i * mL * 2
 // ( x - mL ) / ( mL * 2 ) = i
 
-window.onresize = function()
-{
-	console.log( window.offsetHeight );
-	resizeScreen();
-    ajustaNavbar();
-}
-
-function ajustaNavbar()
-{
-	var sizeNavbar = document.getElementsByClassName( 'navbar' )[ 0 ].clientHeight;
-    $( '.container-fluid' ).css( 'padding-top', sizeNavbar + "px" );
-}
-
 $( document ).ready( function()
 {
     ajustaNavbar();
@@ -134,3 +196,9 @@ $( document ).ready( function()
 
 SVG.on( document, 'DOMContentLoaded', function()
 { resizeScreen(); } );
+
+function ajustaNavbar()
+{
+    var sizeNavbar = document.getElementsByClassName( 'navbar' )[ 0 ].clientHeight;
+    $( '.container-fluid' ).css( 'padding-top', sizeNavbar + "px" );
+}

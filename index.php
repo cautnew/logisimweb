@@ -7,21 +7,25 @@
 	<link rel="stylesheet" href="css/geral.css" />
 	<script src="js/svg.min.js"></script>
 	<style type="text/css">
-        .teste:hover
-        {
-            fill: #000;
-        }
-        .teste2
+        .pin:hover
+        { fill: #000; }
+        .pand
         {
             border: 1px solid #000;
             fill: #000;
         }
-		#elmov
-		{
-			border: 1px solid #000;
-			height: 40px;
-			width: 40px;
-		}
+        .porta-and
+        {
+            border: 1px solid #000;
+            height: 40px;
+            width: 40px;
+        }
+        .porta-or
+        {
+            border: 1px solid #ccc;
+            height: 40px;
+            width: 40px;
+        }
 	</style>
 </head>
 <body>
@@ -43,16 +47,12 @@
 				<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">Controles</h6>
 				<ul class="nav flex-column mb-2">
 					<li class="nav-item">
-						<label for="n-zoom">Zoom</label>
-						<input type="range" id="n-zoom" name="n-zoom" class="custom-range" max="100" min="30" value="60">
+						<label>Pinos horizontais:</label>
+						<input type="number" min="1" class="form-control" value="20" id="px">
 					</li>
 					<li class="nav-item">
-						<label>clientX</label>
-						<input type="text" id="dclientx">
-					</li>
-					<li class="nav-item">
-						<label>clientY</label>
-						<input type="text" id="dclienty">
+						<label>Pinos verticais:</label>
+                        <input type="number" min="1" class="form-control" value="20" id="py">
 					</li>
 				</ul>
 
@@ -61,11 +61,12 @@
 
 		<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
 			<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-				<div class="col-12" id="spc-grad" style="height: 100%;">
+				<div class="col-12" id="spc-grad" style="height: 100%;overflow:scroll;zoom:1;">
 					<svg id="gradient-princ" style="border: 1px solid #000;"></svg>
 				</div>
 			</div>
-            <div id="elmov"></div>
+            <div id="porta-and" class="porta-and" data-tipo-porta="and"></div>
+            <div id="porta-or" class="porta-or" data-tipo-porta="or"></div>
 		</main>
 	</div>
 </div>

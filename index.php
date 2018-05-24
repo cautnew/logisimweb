@@ -56,10 +56,16 @@
 					</div>
 				</li>
 				<li class="nav-item">
+					<img src="./img/cursor.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;">
+				</li>
+				<li class="nav-item">
 					<img src="./img/entrada_desativado.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;">
 				</li>
 				<li class="nav-item">
 					<img src="./img/saida_desativada.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;">
+				</li>
+				<li class="nav-item">
+					<img src="./img/fio.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;">
 				</li>
 				<li class="nav-item">
 					<img src="./img/and.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;">

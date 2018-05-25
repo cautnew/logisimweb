@@ -12,16 +12,16 @@ var
 	grad = null,
 	qPh = 0,
 	qPv = 0,
-    elgrad = document.getElementById( 'gradient-princ' ),
+	elgrad = document.getElementById( 'gradient-princ' ),
 	spcGrad = document.getElementById( 'spc-grad' ),
-    divGrad = spcGrad.parentNode,
+	divGrad = spcGrad.parentNode,
 	//rangeZoom = document.getElementById( 'n-zoom' ),
 	portas = {
-        'and': document.getElementById('porta-and'),
-        'or': document.getElementById('porta-or')
-    },
-    px = document.getElementById( 'px' ),
-    py = document.getElementById( 'py' ),
+		'and': document.getElementById('porta-and'),
+		'or': document.getElementById('porta-or')
+	},
+	px = document.getElementById( 'px' ),
+	py = document.getElementById( 'py' ),
 	selectedElement=null,
 	currentX=0,
 	currentY=0,
@@ -200,5 +200,5 @@ SVG.on( document, 'DOMContentLoaded', function()
 function ajustaNavbar()
 {
     var sizeNavbar = document.getElementsByClassName( 'navbar' )[ 0 ].clientHeight;
-    $( '.container-fluid' ).css( 'padding-top', sizeNavbar + "px" );
+    //$( '.container-fluid' ).css( 'padding-top', sizeNavbar + "px" );
 }

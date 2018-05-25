@@ -63,14 +63,6 @@ body {
 }
 
 /*
- * Content
- */
-
-[role="main"] {
-  padding-top: 48px; /* Space for fixed navbar */
-}
-
-/*
  * Navbar
  */
 
@@ -105,3 +97,7 @@ body {
 
 .border-top { border-top: 1px solid #e5e5e5; }
 .border-bottom { border-bottom: 1px solid #e5e5e5; }
+
+.btn-menu-opt:hover,
+.btn-menu-opt.opt-active
+{ background-color: #ccc; }

@@ -7,28 +7,6 @@
 	<link rel="stylesheet" href="css/bootstrap.min.css" />
 	<link rel="stylesheet" href="css/geral.css" />
 	<script src="js/svg.min.js"></script>
-	<style type="text/css">
-		.pin:hover {
-			fill: #000;
-		}
-
-		.pand {
-			border: 1px solid #000;
-			fill: #000;
-		}
-
-		.porta-and {
-			border: 1px solid #000;
-			height: 40px;
-			width: 40px;
-		}
-
-		.porta-or {
-			border: 1px solid #ccc;
-			height: 40px;
-			width: 40px;
-		}
-	</style>
 </head>
 
 <body>
@@ -55,68 +33,51 @@
 						<a class="dropdown-item" href="#">Fechar</a>
 					</div>
 				</li>
-				<li class="nav-item">
-					<img src="./img/cursor.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;">
+				<li class="nav-item btn-menu-opt">
+					<img src="./img/entrada_desativado.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;" title="Entrada">
 				</li>
-				<li class="nav-item">
-					<img src="./img/entrada_desativado.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;">
+				<li class="nav-item btn-menu-opt">
+					<img src="./img/saida_desativada.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;" title="Saída">
 				</li>
-				<li class="nav-item">
-					<img src="./img/saida_desativada.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;">
+				<li class="nav-item btn-menu-opt">
+					<img src="./img/cursor.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;" title="Selecionar">
 				</li>
-				<li class="nav-item">
-					<img src="./img/fio.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;">
+				<li class="nav-item btn-menu-opt">
+					<img src="./img/fio.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;" title="Fio">
 				</li>
-				<li class="nav-item">
-					<img src="./img/and.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;">
+				<li class="nav-item btn-menu-opt" data-porta="and">
+					<img src="./img/and.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;" title="Porta AND">
 				</li>
-				<li class="nav-item">
-					<img src="./img/or.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;">
+				<li class="nav-item btn-menu-opt">
+					<img src="./img/or.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;" title="Porta OR">
 				</li>
-				<li class="nav-item">
-					<img src="./img/not.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;">
+				<li class="nav-item btn-menu-opt">
+					<img src="./img/not.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;" title="Porta NOT">
 				</li>
-				<li class="nav-item">
-					<img src="./img/xor.png" class="img-fluid" style="max-height: 40px; max-width: 40px; margin: 0 10px;">
+				<li class="nav-item btn-menu-opt">
+					<img src="./img/xor.png" class="img-fluid" style="max-height: 40px; max-width: 40px; margin: 0 10px;" title="Porta XOR">
 				</li>
-				<li class="nav-item">
-					<img src="./img/xnor.png" class="img-fluid" style="max-height: 40px; max-width: 40px; margin: 0 10px;">
+				<li class="nav-item btn-menu-opt">
+					<img src="./img/xnor.png" class="img-fluid" style="max-height: 40px; max-width: 40px; margin: 0 10px;" title="Porta XNOR">
 				</li>
 			</ul>
 		</div>
 	</nav>
 
-	<div class="container">
+	<div class="container-fluid">
 		<div class="row justify-content-md-center">
 			<div class="col-sm-2">
 				<label>Pinos horizontais:</label>
-				<input type="number" min="1" class="form-control" value="20" id="px">
+				<input type="number" min="1" class="form-control" value="80" id="px">
 			</div>
 			<div class="col-sm-2">
 				<label>Pinos verticais:</label>
-				<input type="number" min="1" class="form-control" value="20" id="py">
+				<input type="number" min="1" class="form-control" value="40" id="py">
 			</div>
 		</div>
 		<div class="row">
-			<!-- <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-				<div class="sidebar-sticky">
-					<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">Controles</h6>
-					<ul class="nav flex-column mb-2">
-						<li class="nav-item">
-							<label>Pinos horizontais:</label>
-							<input type="number" min="1" class="form-control" value="20" id="px">
-						</li>
-						<li class="nav-item">
-							<label>Pinos verticais:</label>
-							<input type="number" min="1" class="form-control" value="20" id="py">
-						</li>
-					</ul>
-
-				</div>
-			</nav> -->
-
-			<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-				<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+			<main role="main" class="col-12 mt-1">
+				<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center border-bottom">
 					<div class="col-12" id="spc-grad" style="height: 100%;overflow:scroll;zoom:1;">
 						<svg id="gradient-princ" style="border: 1px solid #000;"></svg>
 					</div>

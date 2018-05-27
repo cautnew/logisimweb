@@ -23,34 +23,33 @@ var
 	currentX=0,
 	currentY=0,
 	qtdPortas=[],
+	indAddPorta=true,
+	indAddLine=true,
   fat = 1;//( rangeZoom.value / 100 );
 
 var portas = {
 	'pand': {
-		bgColor: '#000',
+		color: '#000',
 		pts: [
 			[0, 0],
 			[0, 1],
-			[1, 1],
 			[2, 1],
-			[2, 0],
 			[2, -1],
-			[1, -1],
 			[0, -1]
 		]
 	},
 	'por': {
-		bgColor: '#CCC',
+		color: '#CCC',
 		pts: [
 			[0, 0],
 			[0, 1],
-			[1, 1],
 			[2, 1],
-			[2, 0],
 			[2, -1],
-			[1, -1],
 			[0, -1]
 		]
+	},
+	'cline': {
+		color: '#CCC'
 	}
 }
 
@@ -67,52 +66,60 @@ function portaDragStart( evt )
 
 function portaDragOver( evt )
 {
-    id = evt.target.id,
+	id = evt.target.id,
 	i = getCrd( mL, evt.offsetX - 20 ),
 	j = getCrd( mT, evt.offsetY - 20 ),
-    x = getPos( mL, i ),
-    y = getPos( mT, j );
+	x = getPos( mL, i ),
+	y = getPos( mT, j );
 
-    grad.select( '#' + id ).move( x, y );
+	grad.select( '#' + id ).move( x, y );
 
-    currentX = evt.clientX;
-    currentY = evt.clientY;
+	currentX = evt.clientX;
+	currentY = evt.clientY;
 }
 
 function portaMouseOut(evt)
 {
-    if(selectedElement != 0)
-    {
-        selectedElement.removeAttributeNS(null, "onmousemove");
-        selectedElement.removeAttributeNS(null, "onmouseout");
-        selectedElement.removeAttributeNS(null, "onmouseup");
-        selectedElement = 0;
-    }
-}
-
-elgrad.onclick = function( evt )
-{
-	var
-		i = getCrd( mL, evt.offsetX ),
-		j = getCrd( mT, evt.offsetY ),
-		x = getPos( mL, i ),
-		y = getPos( mT, j );
-	
-	if( optSel != null )
+	if(selectedElement != 0)
 	{
-		var pts = [];
-		optSel.pts.forEach( function( el )
-		{
-			pts.push( [ getPos( mL, el[ 0 ] ), getPos( mT, el[ 1 ] ) ] );
-		});
-		console.log( pts );
-		var pol = grad.polyline( pts );
-		pol.fill( optSel.bgColor );
-		pol.move( x, y );
+		selectedElement.removeAttributeNS(null, "onmousemove");
+		selectedElement.removeAttributeNS(null, "onmouseout");
+		selectedElement.removeAttributeNS(null, "onmouseup");
+		selectedElement = 0;
 	}
 }
 
-elgrad.ondrop = function( evt )
+function addLine( evt )
+{
+}
+
+function addPorta( evt )
+{
+	if( indAddPorta )
+	{
+		var
+			i = getCrd( mL, evt.offsetX ),
+			j = getCrd( mT, evt.offsetY ),
+			x = getPos( mL, i ),
+			y = getPos( mT, j );
+
+		if( optSel != null )
+		{
+			var pol = optSel.poly.clone();
+			pol.fill( optSel.color );
+			pol.move( x + (wR / 2), y + (hR / 2) );
+			pol.show();
+			pol.click( function()
+			{
+				indAddPorta = false;
+				alert( "Você não pode criar outro aqui." );
+			});
+		}
+	}
+	indAddPorta = true;
+}
+
+/*elgrad.ondrop = function( evt )
 {
 	var
 		i = getCrd( mL, evt.offsetX - 20 ),
@@ -142,7 +149,7 @@ elgrad.ondrop = function( evt )
     console.log( "Y = " + y );
     console.log( "i = " + i );
     console.log( "j = " + j );
-}
+}*/
 
 function resizeScreen()
 {
@@ -217,7 +224,37 @@ $( document ).ready( function()
 	$( ".btn-menu-opt" ).click( function()
 	{
 		var opt = $( this ).data( "tp" );
+		
+		switch( opt )
+		{
+			case 'cin':
+			case 'cout':
+			case 'sel': elgrad.onclick = null; break;
+			case 'cline': elgrad.onclick = addLine; break;
+			default: elgrad.onclick = addPorta;
+		}
+
 		optSel = portas[ opt ];
+		$( this ).addClass( "opt-active" );
+
+		if( selectedElement != null )
+		{ $( selectedElement ).removeClass( "opt-active" ); }
+
+		selectedElement = this;
+	});
+
+	[ 'pand', 'por' ].forEach( function( pt )
+	{
+		var pts = [];
+		portas[ pt ].pts.forEach( function( el )
+		{
+			var
+				x = getPos( mL, el[ 0 ] ),
+				y = getPos( mT, el[ 1 ] );
+			pts.push( [ x, y ] );
+		});
+		portas[ pt ].poly = grad.polygon( pts );
+		portas[ pt ].poly.hide();
 	});
 });
 

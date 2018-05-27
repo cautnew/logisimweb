@@ -16,17 +16,20 @@ var
 	spcGrad = document.getElementById( 'spc-grad' ),
 	divGrad = spcGrad.parentNode,
 	//rangeZoom = document.getElementById( 'n-zoom' ),
-	portas = {
-		'and': document.getElementById('porta-and'),
-		'or': document.getElementById('porta-or')
-	},
 	px = document.getElementById( 'px' ),
 	py = document.getElementById( 'py' ),
 	selectedElement=null,
 	currentX=0,
 	currentY=0,
 	qtdPortas=[],
-    fat = 1;//( rangeZoom.value / 100 );
+  fat = 1;//( rangeZoom.value / 100 );
+
+var portas = {
+	'and': {
+
+	},
+	'or': document.getElementById('porta-or')
+}
 
 Object.getOwnPropertyNames( portas ).forEach( function(p)
 {
@@ -131,7 +134,7 @@ function resizeScreen()
 function resizeGrid()
 {
 	//Apaga tudo da tela para reinserir
-    elgrad.innerHTML = "";
+	elgrad.innerHTML = "";
 
 	//mL = mLp * fat;
 	//mT = mTp * fat;
@@ -191,7 +194,12 @@ function getCrd( m, pos )
 
 $( document ).ready( function()
 {
-    ajustaNavbar();
+	ajustaNavbar();
+	$( ".btn-menu-opt" ).click( function()
+	{
+		var porta = $( this ).data( "tp" );
+		console.log( porta );
+	});
 });
 
 SVG.on( document, 'DOMContentLoaded', function()

@@ -33,31 +33,31 @@
 						<a class="dropdown-item" href="#">Fechar</a>
 					</div>
 				</li>
-				<li class="nav-item btn-menu-opt">
+				<li class="nav-item btn-menu-opt" data-tp="pin">
 					<img src="./img/entrada_desativado.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;" title="Entrada">
 				</li>
-				<li class="nav-item btn-menu-opt">
+				<li class="nav-item btn-menu-opt" data-tp="pout">
 					<img src="./img/saida_desativada.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;" title="Saída">
 				</li>
-				<li class="nav-item btn-menu-opt">
+				<li class="nav-item btn-menu-opt" data-tp="sel">
 					<img src="./img/cursor.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;" title="Selecionar">
 				</li>
-				<li class="nav-item btn-menu-opt">
+				<li class="nav-item btn-menu-opt" data-tp="pline">
 					<img src="./img/fio.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;" title="Fio">
 				</li>
-				<li class="nav-item btn-menu-opt" data-porta="and">
+				<li class="nav-item btn-menu-opt" data-tp="pand">
 					<img src="./img/and.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;" title="Porta AND">
 				</li>
-				<li class="nav-item btn-menu-opt">
+				<li class="nav-item btn-menu-opt" data-tp="por">
 					<img src="./img/or.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;" title="Porta OR">
 				</li>
-				<li class="nav-item btn-menu-opt">
+				<li class="nav-item btn-menu-opt" data-tp="pnot">
 					<img src="./img/not.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;" title="Porta NOT">
 				</li>
-				<li class="nav-item btn-menu-opt">
+				<li class="nav-item btn-menu-opt" data-tp="pxor">
 					<img src="./img/xor.png" class="img-fluid" style="max-height: 40px; max-width: 40px; margin: 0 10px;" title="Porta XOR">
 				</li>
-				<li class="nav-item btn-menu-opt">
+				<li class="nav-item btn-menu-opt" data-tp="pxnor">
 					<img src="./img/xnor.png" class="img-fluid" style="max-height: 40px; max-width: 40px; margin: 0 10px;" title="Porta XNOR">
 				</li>
 			</ul>

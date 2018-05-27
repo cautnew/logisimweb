@@ -33,16 +33,16 @@
 						<a class="dropdown-item" href="#">Fechar</a>
 					</div>
 				</li>
-				<li class="nav-item btn-menu-opt" data-tp="pin">
+				<li class="nav-item btn-menu-opt" data-tp="cin">
 					<img src="./img/entrada_desativado.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;" title="Entrada">
 				</li>
-				<li class="nav-item btn-menu-opt" data-tp="pout">
+				<li class="nav-item btn-menu-opt" data-tp="cout">
 					<img src="./img/saida_desativada.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;" title="Saída">
 				</li>
 				<li class="nav-item btn-menu-opt" data-tp="sel">
 					<img src="./img/cursor.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;" title="Selecionar">
 				</li>
-				<li class="nav-item btn-menu-opt" data-tp="pline">
+				<li class="nav-item btn-menu-opt" data-tp="cline">
 					<img src="./img/fio.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;" title="Fio">
 				</li>
 				<li class="nav-item btn-menu-opt" data-tp="pand">

@@ -12,6 +12,7 @@ var
 	grad = null,
 	qPh = 0,
 	qPv = 0,
+	optSel = null,
 	elgrad = document.getElementById( 'gradient-princ' ),
 	spcGrad = document.getElementById( 'spc-grad' ),
 	divGrad = spcGrad.parentNode,
@@ -25,27 +26,33 @@ var
   fat = 1;//( rangeZoom.value / 100 );
 
 var portas = {
-	'and': {
-
+	'pand': {
+		bgColor: '#000',
+		pts: [
+			[0, 0],
+			[0, 1],
+			[1, 1],
+			[2, 1],
+			[2, 0],
+			[2, -1],
+			[1, -1],
+			[0, -1]
+		]
 	},
-	'or': document.getElementById('porta-or')
+	'por': {
+		bgColor: '#CCC',
+		pts: [
+			[0, 0],
+			[0, 1],
+			[1, 1],
+			[2, 1],
+			[2, 0],
+			[2, -1],
+			[1, -1],
+			[0, -1]
+		]
+	}
 }
-
-Object.getOwnPropertyNames( portas ).forEach( function(p)
-{
-    portas[ p ].draggable = true;
-
-    portas[ p ].ondragstart = function( evt )
-    {
-    	evt.dataTransfer.setData( 'tipo-porta', evt.target.getAttribute( 'data-tipo-porta' ) );
-        console.log( "Movendo..." );
-    }
-
-    portas[ p ].ondragend = function( evt )
-    {
-        console.log( "Livre" );
-    }
-});
 
 function portaDragStart( evt )
 {
@@ -83,11 +90,26 @@ function portaMouseOut(evt)
     }
 }
 
-elgrad.ondragover = function( evt )
+elgrad.onclick = function( evt )
 {
-	console.log( "clientX = " + evt.offsetX );
-    console.log( "clientY = " + evt.offsetY );
-	return false;
+	var
+		i = getCrd( mL, evt.offsetX ),
+		j = getCrd( mT, evt.offsetY ),
+		x = getPos( mL, i ),
+		y = getPos( mT, j );
+	
+	if( optSel != null )
+	{
+		var pts = [];
+		optSel.pts.forEach( function( el )
+		{
+			pts.push( [ getPos( mL, el[ 0 ] ), getPos( mT, el[ 1 ] ) ] );
+		});
+		console.log( pts );
+		var pol = grad.polyline( pts );
+		pol.fill( optSel.bgColor );
+		pol.move( x, y );
+	}
 }
 
 elgrad.ondrop = function( evt )
@@ -162,21 +184,17 @@ function resizeGrid()
 				'data-yp': j
 			});
 			rect.move( posX, posY );
+			rect.click( function()
+			{
+				console.log( this );
+			});
 		}
 
 	grad.size( posX + 2 * mL, posY + 2 * mT );
 }
 
-px.onchange = function(){ resizeGrid(); }
-py.onchange = function(){ resizeGrid(); }
-
-/*rangeZoom.onchange = function()
-{
-    fat = ( this.value * 4 / 100 );
-	divGrad.style.zoom = fat;
-    console.log( "h = " + elgrad.clientHeight );
-    console.log( "w = " + elgrad.clientWidth );
-}*/
+//px.onchange = function(){ resizeGrid(); }
+//py.onchange = function(){ resizeGrid(); }
 
 // ( x, y )
 function getPos( m, t )
@@ -195,10 +213,11 @@ function getCrd( m, pos )
 $( document ).ready( function()
 {
 	ajustaNavbar();
+
 	$( ".btn-menu-opt" ).click( function()
 	{
-		var porta = $( this ).data( "tp" );
-		console.log( porta );
+		var opt = $( this ).data( "tp" );
+		optSel = portas[ opt ];
 	});
 });
 

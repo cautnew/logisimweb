@@ -68,11 +68,11 @@
 		<div class="row justify-content-md-center">
 			<div class="col-sm-2">
 				<label>Pinos horizontais:</label>
-				<input type="number" min="1" class="form-control" value="80" id="px">
+				<input type="number" min="1" class="form-control" value="60" id="px">
 			</div>
 			<div class="col-sm-2">
 				<label>Pinos verticais:</label>
-				<input type="number" min="1" class="form-control" value="40" id="py">
+				<input type="number" min="1" class="form-control" value="30" id="py">
 			</div>
 		</div>
 		<div class="row">

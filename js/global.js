@@ -25,11 +25,20 @@ var
 	qtdPortas=[],
 	indAddPorta=true,
 	indAddLine=true,
+	linePt1 = null,
+	linePt2 = null,
+	lineProv = null,
+	p_out = [  ],
+	p_in = { '0,0':1 },
   fat = 1;//( rangeZoom.value / 100 );
 
 var portas = {
 	'pand': {
 		color: '#000',
+		ptin: [ 0, 1 ],
+		ptout: [
+			{ pt: 3, fn: function(){} }
+		],
 		pts: [
 			[0, 0],
 			[0, 1],
@@ -40,12 +49,26 @@ var portas = {
 	},
 	'por': {
 		color: '#CCC',
+		ptin: [ 0, 1 ],
+		ptout: [ { pt: 3, fn: function(){ return false; } } ],
 		pts: [
 			[0, 0],
 			[0, 1],
 			[2, 1],
 			[2, -1],
 			[0, -1]
+		]
+	},
+	'pnot': {
+		color: '#CCC',
+		ptin: [ 0 ],
+		ptout: [ { pt: 3, fn: function(){} } ],
+		pts: [
+			[0, 0],
+			[0, 1],
+			[1, 1],
+			[2, 1],
+			[2, 0]
 		]
 	},
 	'cline': {
@@ -78,7 +101,7 @@ function portaDragOver( evt )
 	currentY = evt.clientY;
 }
 
-function portaMouseOut(evt)
+function portaMouseOut( evt )
 {
 	if(selectedElement != 0)
 	{
@@ -91,6 +114,26 @@ function portaMouseOut(evt)
 
 function addLine( evt )
 {
+	var
+		i = getCrd( mL, evt.offsetX ),
+		j = getCrd( mT, evt.offsetY ),
+		x = getPos( mL, i ) + (wR/2),
+		y = getPos( mT, j ) + (hR/2);
+
+	if( linePt1 == null )
+	{
+		linePt1 = [x,y];
+		lineProv = grad.line();
+		lineProv.stroke({width: 4});
+	}
+	else if( linePt2 == null )
+	{
+		linePt2 = [x,y];
+		lineProv.plot([linePt1, linePt2]);
+		console.log( linePt1 );
+		console.log( linePt2 );
+		linePt1 = linePt2 = null;
+	}
 }
 
 function addPorta( evt )
@@ -200,27 +243,33 @@ function resizeGrid()
 	grad.size( posX + 2 * mL, posY + 2 * mT );
 }
 
-//px.onchange = function(){ resizeGrid(); }
-//py.onchange = function(){ resizeGrid(); }
-
 // ( x, y )
 function getPos( m, t )
-{ return ( m * ( 1 + t * 2 ) ); }
+{
+	var v = t * 2;
+	v += 1;
+	return m * v;
+}
 // mL + i * mL * 2 = x
 // mL * ( 1 + i * 2 ) = x
 // mL = x / ( 1 + i * 2 )
 
 // ( i, j )
 function getCrd( m, pos )
-{ return Math.round( ( ( pos - m ) / ( m * 2 ) ) ); }
+{
+	var
+		v = m * 2,
+		s = pos - m,
+		r = s / v;
+
+	return Math.round( r );
+}
 // x = mL + i * mL * 2
 // x - mL = i * mL * 2
 // ( x - mL ) / ( mL * 2 ) = i
 
 $( document ).ready( function()
 {
-	ajustaNavbar();
-
 	$( ".btn-menu-opt" ).click( function()
 	{
 		var opt = $( this ).data( "tp" );
@@ -243,7 +292,7 @@ $( document ).ready( function()
 		selectedElement = this;
 	});
 
-	[ 'pand', 'por' ].forEach( function( pt )
+	[ 'pand', 'por', 'pnot' ].forEach( function( pt )
 	{
 		var pts = [];
 		portas[ pt ].pts.forEach( function( el )
@@ -260,9 +309,3 @@ $( document ).ready( function()
 
 SVG.on( document, 'DOMContentLoaded', function()
 { resizeScreen(); } );
-
-function ajustaNavbar()
-{
-    var sizeNavbar = document.getElementsByClassName( 'navbar' )[ 0 ].clientHeight;
-    //$( '.container-fluid' ).css( 'padding-top', sizeNavbar + "px" );
-}

@@ -60,6 +60,9 @@
 				<li class="nav-item btn-menu-opt" data-tp="pxnor">
 					<img src="./img/xnor.png" class="img-fluid" style="max-height: 40px; max-width: 40px; margin: 0 10px;" title="Porta XNOR">
 				</li>
+				<li class="nav-item btn-menu-opt" data-tp="pxnor">
+					<img src="./img/deletar.png" class="img-fluid" style="max-height: 40px; max-width: 40px; margin: 0 10px;" title="Porta XNOR">
+				</li>
 			</ul>
 		</div>
 	</nav>

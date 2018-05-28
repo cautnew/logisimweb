@@ -20,6 +20,7 @@ var
 	px = document.getElementById( 'px' ),
 	py = document.getElementById( 'py' ),
 	selectedElement=null,
+	selEl = null,
 	currentX=0,
 	currentY=0,
 	qtdPortas=[],
@@ -28,6 +29,7 @@ var
 	linePt1 = null,
 	linePt2 = null,
 	lineProv = null,
+	indSel = false,
 	p_out = [  ],
 	p_in = { '0,0':1 },
   fat = 1;//( rangeZoom.value / 100 );
@@ -78,22 +80,23 @@ var portas = {
 
 function portaDragStart( evt )
 {
-    selectedElement = evt.target;
-    currentX = evt.offsetX;
-    currentY = evt.offsetY;
+	selectedElement = evt.target;
+	currentX = evt.offsetX;
+	currentY = evt.offsetY;
 
-    selectedElement.setAttributeNS(null, "onmousemove", "portaDragOver(evt)");
-    selectedElement.setAttributeNS(null, "onmouseout", "portaMouseOut(evt)");
-    selectedElement.setAttributeNS(null, "onmouseup", "portaMouseOut(evt)");
+	selectedElement.setAttributeNS(null, "onmousemove", "portaDragOver(evt)");
+	selectedElement.setAttributeNS(null, "onmouseout", "portaMouseOut(evt)");
+	selectedElement.setAttributeNS(null, "onmouseup", "portaMouseOut(evt)");
 }
 
 function portaDragOver( evt )
 {
-	id = evt.target.id,
-	i = getCrd( mL, evt.offsetX - 20 ),
-	j = getCrd( mT, evt.offsetY - 20 ),
-	x = getPos( mL, i ),
-	y = getPos( mT, j );
+	var
+		id = evt.target.id,
+		i = getCrd( mL, evt.offsetX - 20 ),
+		j = getCrd( mT, evt.offsetY - 20 ),
+		x = getPos( mL, i ),
+		y = getPos( mT, j );
 
 	grad.select( '#' + id ).move( x, y );
 
@@ -125,6 +128,7 @@ function addLine( evt )
 		linePt1 = [x,y];
 		lineProv = grad.line();
 		lineProv.stroke({width: 4});
+		
 	}
 	else if( linePt2 == null )
 	{
@@ -155,7 +159,8 @@ function addPorta( evt )
 			pol.click( function()
 			{
 				indAddPorta = false;
-				alert( "Você não pode criar outro aqui." );
+				if( indSel )
+				{ selEl = this; }
 			});
 		}
 	}
@@ -246,7 +251,7 @@ function resizeGrid()
 // ( x, y )
 function getPos( m, t )
 {
-	var v = t * 2;
+	var v = t + t;
 	v += 1;
 	return m * v;
 }
@@ -258,7 +263,7 @@ function getPos( m, t )
 function getCrd( m, pos )
 {
 	var
-		v = m * 2,
+		v = m + m,
 		s = pos - m,
 		r = s / v;
 
@@ -278,7 +283,10 @@ $( document ).ready( function()
 		{
 			case 'cin':
 			case 'cout':
-			case 'sel': elgrad.onclick = null; break;
+			case 'sel':
+				selEl = null;
+				indSel = true;
+				break;
 			case 'cline': elgrad.onclick = addLine; break;
 			default: elgrad.onclick = addPorta;
 		}

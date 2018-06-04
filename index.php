@@ -88,6 +88,7 @@
 
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
+	<script src="js/portas.js"></script>
 	<script src="js/global.js"></script>
 </body>
 

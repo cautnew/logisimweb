@@ -32,59 +32,12 @@ var
 	indSel = false,
 	indDel = false,
 	p_out = [  ],
-	p_in = { '0,0':1 },
+	p_in = {  },
   fat = 1;//( rangeZoom.value / 100 );
 
-var portas = {
-	'pand': {
-		name: 'and',
-		color: '#000',
-		ptin: [ 0, 4 ],
-		ptout: [
-			{ pt: 2, fn: function(){} }
-		],
-		pts: [
-			[0, 0],
-			[2, 0],
-			[2, 1],
-			[2, 2],
-			[0, 2],
-			[0, 1]
-		]
-	},
-	'por': {
-		name: 'or',
-		color: '#CCC',
-		ptin: [ 0, 4 ],
-		ptout: [ { pt: 2, fn: function(){ return false; } } ],
-		pts: [
-			[0, 0],
-			[2, 0],
-			[2, 1],
-			[2, 2],
-			[0, 2],
-			[0, 1]
-		]
-	},
-	'pnot': {
-		name: 'not',
-		color: '#CCC',
-		ptin: [ 0 ],
-		ptout: [ { pt: 3, fn: function(){} } ],
-		pts: [
-			[0, 0],
-			[0, 1],
-			[1, 1],
-			[2, 1],
-			[2, 0]
-		]
-	},
-	'cline': {
-		color: '#CCC'
-	}
-},
-portasAdd = [],
-caminho = [];
+var
+	portasAdd = [],
+	caminho = [];
 
 function portaDragStart( evt )
 {
@@ -95,32 +48,6 @@ function portaDragStart( evt )
 	selectedElement.setAttributeNS(null, "onmousemove", "portaDragOver(evt)");
 	selectedElement.setAttributeNS(null, "onmouseout", "portaMouseOut(evt)");
 	selectedElement.setAttributeNS(null, "onmouseup", "portaMouseOut(evt)");
-}
-
-function portaDragOver( evt )
-{
-	var
-		id = evt.target.id,
-		i = getCrd( mL, evt.offsetX - 20 ),
-		j = getCrd( mT, evt.offsetY - 20 ),
-		x = getPos( mL, i ),
-		y = getPos( mT, j );
-
-	grad.select( '#' + id ).move( x, y );
-
-	currentX = evt.clientX;
-	currentY = evt.clientY;
-}
-
-function portaMouseOut( evt )
-{
-	if(selectedElement != 0)
-	{
-		selectedElement.removeAttributeNS(null, "onmousemove");
-		selectedElement.removeAttributeNS(null, "onmouseout");
-		selectedElement.removeAttributeNS(null, "onmouseup");
-		selectedElement = 0;
-	}
 }
 
 function addLine( evt )
@@ -135,14 +62,15 @@ function addLine( evt )
 	{
 		linePt1 = [x,y];
 		lineProv = grad.line();
+		lineProv.pI = [ i, j ];
 		lineProv.stroke({width: 4});
-		
 	}
 	else if( linePt2 == null )
 	{
 		linePt2 = [x,y];
 		lineProv.plot([linePt1, linePt2]);
 		linePt1 = linePt2 = null;
+		lineProv.pF = [ i, j ];
 		lineProv.click( function()
 		{
 			if( indDel )
@@ -160,19 +88,23 @@ function addPorta( evt )
 			j = getCrd( mT, evt.offsetY ),
 			x = getPos( mL, i ),
 			y = getPos( mT, j );
-		
+
 		x+= ( wR / 2 );
 		y+= ( hR / 2 );
-		
+
 		console.log( "(" + i + ", " + j + ")" );
 
 		if( optSel != null )
 		{
 			var
 				pol = optSel.poly.clone(),
-				circ = optSel.circles;
+				circ = optSel.circles,
+				obj={};
 
 			pol.circ = [];
+			pol.obj = obj;
+			obj.poly = pol;
+			obj.portas = [];
 			pol.fill( optSel.color );
 			pol.opacity( 0.5 );
 			pol.move( x, y );
@@ -190,15 +122,33 @@ function addPorta( evt )
 					this.remove();
 				}
 			});
-			
+
 			//Bolinhas de entrada e saída
 			circ.forEach( function( el )
 			{
-				c = el.clone();
-				console.log( ( x - mL ) + " x " + ( y - mT ) );
-				c.dx( x - mL ).dy( y - mT );
+				var
+				  c = el.clone(),
+					tx = ( x - mL ),
+					ty = ( y - mT );
+
+				c.dx( tx ).dy( ty );
+				
+				var
+					cx = c.x(),
+					cy = c.y(),
+					ci = getCrd( mL, cx ),
+					cj = getCrd( mT, cy );
+
+				console.log( el );
+				console.log( "(i,j): (" + ci + "," + cj + ")" );
+
 				c.show();
 				pol.circ.push( c );
+			});
+			
+			portasAdd.push({
+				tipo: optSel.name,
+				
 			});
 		}
 	}
@@ -255,7 +205,7 @@ function resizeGrid()
 	grad.size( posX + 2 * mL, posY + 2 * mT );
 }
 
-// ( x, y )
+// ( x, y ) // dá a coordenada do pino
 function getPos( m, t )
 {
 	var v = t + t;
@@ -266,7 +216,7 @@ function getPos( m, t )
 // mL * ( 1 + i * 2 ) = x
 // mL = x / ( 1 + i * 2 )
 
-// ( i, j )
+// ( i, j ) // da a coordenada cartesiana, pixels
 function getCrd( m, pos )
 {
 	var
@@ -290,11 +240,12 @@ $( document ).ready( function()
 		selEl = null;
 		indSel = false;
 		indDel = false;
+		lineProv = linePt1 = linePt2 = null;
 		
 		switch( opt )
 		{
-			case 'cin':
-			case 'cout':
+			/*case 'cin':
+			case 'cout':*/
 			case 'del':
 				indDel = true;
 			break;
@@ -318,7 +269,7 @@ $( document ).ready( function()
 	});
 
 	//Criação do temporário de cada porta
-	[ 'pand', 'por', 'pnot' ].forEach( function( pt )
+	[ 'pand', 'por', 'pnot', 'cin', 'cout' ].forEach( function( pt )
 	{
 		var pts = [];
 
@@ -337,36 +288,45 @@ $( document ).ready( function()
 		porta.circles = [];
 		
 		//Bolinhas de entrada (azuis)
-		porta.ptin.forEach( function( el )
+		if( porta.ptin !== undefined )
 		{
-			var
-				pt = porta.pts[ el ],
-				x = getPos( mL, pt[ 0 ] ),
-				y = getPos( mT, pt[ 1 ] ),
-				circ = grad.circle( 5 ).fill( 'blue' ).cx( x ).cy( y );
+			porta.ptin.forEach( function( el )
+			{
+				var
+					pt = porta.pts[ el ],
+					x = getPos( mL, pt[ 0 ] ),
+					y = getPos( mT, pt[ 1 ] ),
+					circ = grad.circle( 5 ).fill( 'green' ).cx( x ).cy( y );
 
-			circ.hide();
-			porta.circles.push( circ );
-		});
+				circ.direcao = 'in';
+				circ.hide();
+				porta.circles.push( circ );
+			});
+		}
 		
 		//Bolinhas de saída (verdes)
-		var lista = Object.getOwnPropertyNames( porta.ptout );
-		lista.pop();
-
-		lista.forEach( function( el )
+		if( porta.ptout !== undefined )
 		{
-			var
-				pt = porta.pts[ porta.ptout[ el ].pt ],
-				x = getPos( mL, pt[ 0 ] ),
-				y = getPos( mT, pt[ 1 ] ),
-				circ = grad.circle( 5 ).fill( 'green' ).cx( x ).cy( y );
+			var lista = Object.getOwnPropertyNames( porta.ptout );
+			lista.pop();
 
-			circ.hide();
-			porta.circles.push( circ );
-		});
+			lista.forEach( function( el )
+			{
+				var
+					pt = porta.pts[ porta.ptout[ el ].pt ],
+					x = getPos( mL, pt[ 0 ] ),
+					y = getPos( mT, pt[ 1 ] ),
+					circ = grad.circle( 5 ).fill( 'blue' ).cx( x ).cy( y );
+
+				circ.direcao = 'out';
+				circ.hide();
+				porta.circles.push( circ );
+			});
+		}
 
 		porta.poly = pol;
 		porta.poly.hide();
+		console.log( porta );
 	});
 });
 

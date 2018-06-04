@@ -37,15 +37,13 @@ var
 var
 	portasAdd = [],
 	fiosAdd = [],
-	caminho = [];
+	caminho = [],
+	valores = [];
 
 function procResultados()
 {
-	portasAdd.forEach( function( el )
-	{
-		console.log( el );
-		
-	});
+	console.log( p_in );
+	console.log( p_out );
 }
 
 function procCaminhos()
@@ -168,6 +166,32 @@ function addPorta( evt )
 				if( indDel )
 				{
 					var polDel = this;
+					console.log( polDel );
+					//Remove da lista de portas in ou out
+					if( polDel.name == 'in' )
+					{
+						p_in.forEach( function( p, i )
+						{
+							if(
+								polDel.obj.portas[ 0 ].i == p.i &&
+								polDel.obj.portas[ 0 ].j == p.j
+							)
+							{ ind = i; }
+						});
+						p_in.splice( ind, 1 );
+					}
+					else if( polDel.name == 'out' )
+					{
+						p_out.forEach( function( p, i )
+						{
+							if(
+								polDel.obj.portas[ 0 ].i == p.i &&
+								polDel.obj.portas[ 0 ].j == p.j
+							)
+							{ ind = i; }
+						});
+						p_out.splice( ind, 1 );
+					}
 					//Retira da lista de portas
 					portasAdd.forEach( function( porta, i )
 					{
@@ -221,7 +245,6 @@ function addPorta( evt )
 			if( optSel.name == 'in' )
 			{
 				pol.val = 0;
-				p_in[ ind ] = pol;
 				pol.click( function()
 				{
 					var val = prompt( "Insira o valor", this.val );
@@ -231,7 +254,6 @@ function addPorta( evt )
 			}
 			if( optSel.name == 'out' )
 			{
-				p_out[ ind ] = pol;
 				pol.click( function()
 				{
 					alert( this.val );

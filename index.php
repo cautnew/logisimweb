@@ -42,6 +42,9 @@
 				<li class="nav-item btn-menu-opt" data-tp="sel">
 					<img src="./img/cursor.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;" title="Selecionar">
 				</li>
+				<li class="nav-item btn-menu-opt" data-tp="del">
+					<img src="./img/deletar.png" class="img-fluid" style="max-height: 40px; max-width: 40px; margin: 0 10px;" title="Deletar">
+				</li>
 				<li class="nav-item btn-menu-opt" data-tp="cline">
 					<img src="./img/fio.png" class="img-fluid" style="max-height: 40px; max-width: 40px;margin: 0 10px;" title="Fio">
 				</li>
@@ -57,12 +60,6 @@
 				<li class="nav-item btn-menu-opt" data-tp="pxor">
 					<img src="./img/xor.png" class="img-fluid" style="max-height: 40px; max-width: 40px; margin: 0 10px;" title="Porta XOR">
 				</li>
-				<li class="nav-item btn-menu-opt" data-tp="pxnor">
-					<img src="./img/xnor.png" class="img-fluid" style="max-height: 40px; max-width: 40px; margin: 0 10px;" title="Porta XNOR">
-				</li>
-				<li class="nav-item btn-menu-opt" data-tp="pxnor">
-					<img src="./img/deletar.png" class="img-fluid" style="max-height: 40px; max-width: 40px; margin: 0 10px;" title="Porta XNOR">
-				</li>
 			</ul>
 		</div>
 	</nav>
@@ -71,11 +68,11 @@
 		<div class="row justify-content-md-center">
 			<div class="col-sm-2">
 				<label>Pinos horizontais:</label>
-				<input type="number" min="1" class="form-control" value="60" id="px">
+				<input type="number" min="4" class="form-control" value="60" id="px">
 			</div>
 			<div class="col-sm-2">
 				<label>Pinos verticais:</label>
-				<input type="number" min="1" class="form-control" value="30" id="py">
+				<input type="number" min="4" class="form-control" value="30" id="py">
 			</div>
 		</div>
 		<div class="row">
@@ -85,8 +82,6 @@
 						<svg id="gradient-princ" style="border: 1px solid #000;"></svg>
 					</div>
 				</div>
-				<div id="porta-and" class="porta-and" data-tipo-porta="and"></div>
-				<div id="porta-or" class="porta-or" data-tipo-porta="or"></div>
 			</main>
 		</div>
 	</div>

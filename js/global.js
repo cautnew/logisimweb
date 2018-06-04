@@ -16,7 +16,6 @@ var
 	elgrad = document.getElementById( 'gradient-princ' ),
 	spcGrad = document.getElementById( 'spc-grad' ),
 	divGrad = spcGrad.parentNode,
-	//rangeZoom = document.getElementById( 'n-zoom' ),
 	px = document.getElementById( 'px' ),
 	py = document.getElementById( 'py' ),
 	selectedElement=null,
@@ -24,30 +23,66 @@ var
 	currentX=0,
 	currentY=0,
 	qtdPortas=[],
-	indAddPorta=true,
-	indAddLine=true,
-	linePt1 = null,
-	linePt2 = null,
+	indAddPorta = true,
+	indAddLine = true,
+	linePt1  = null,
+	linePt2  = null,
 	lineProv = null,
 	indSel = false,
 	indDel = false,
-	p_out = [  ],
-	p_in = {  },
+	p_in = [],
+	p_out = [],
   fat = 1;//( rangeZoom.value / 100 );
 
 var
 	portasAdd = [],
+	fiosAdd = [],
 	caminho = [];
 
-function portaDragStart( evt )
+function procResultados()
 {
-	selectedElement = evt.target;
-	currentX = evt.offsetX;
-	currentY = evt.offsetY;
+	portasAdd.forEach( function( el )
+	{
+		console.log( el );
+		
+	});
+}
 
-	selectedElement.setAttributeNS(null, "onmousemove", "portaDragOver(evt)");
-	selectedElement.setAttributeNS(null, "onmouseout", "portaMouseOut(evt)");
-	selectedElement.setAttributeNS(null, "onmouseup", "portaMouseOut(evt)");
+function procCaminhos()
+{
+	caminho = [];
+	//Adiciona os fios
+	fiosAdd.forEach( function( fio )
+	{ addCaminhos([ fio.pI, fio.pF ]); });
+}
+
+function addCaminhos( cam )
+{
+	found = -1;
+
+	caminho.forEach( function( el, i )
+	{
+		el.forEach( function( tEl )
+		{
+			cam.forEach( function( c, j )
+			{
+				if( tEl.toString() == c.toString() )
+				{ found = i; itn = j; }
+			});
+		});
+	});
+	
+	if( found < 0 )
+		caminho.push( cam );
+	else
+	{
+		cam.forEach( function( el, i )
+		{
+			if( i != itn )
+				caminho[ found ].push( el );
+		});
+	}
+	procResultados();
 }
 
 function addLine( evt )
@@ -60,22 +95,35 @@ function addLine( evt )
 
 	if( linePt1 == null )
 	{
-		linePt1 = [x,y];
+		linePt1 = [ x, y ];
 		lineProv = grad.line();
 		lineProv.pI = [ i, j ];
 		lineProv.stroke({width: 4});
 	}
 	else if( linePt2 == null )
 	{
-		linePt2 = [x,y];
+		linePt2 = [ x, y ];
 		lineProv.plot([linePt1, linePt2]);
 		linePt1 = linePt2 = null;
 		lineProv.pF = [ i, j ];
+		addCaminhos([ lineProv.pI, lineProv.pF ]);
 		lineProv.click( function()
 		{
 			if( indDel )
-			{ this.remove(); }
+			{
+				var fioDel = this;
+				fiosAdd.forEach( function( fio, i )
+				{
+					if( fioDel.pI == fio.pI && fioDel.pF == fio.pF )
+					{ ind = i; }
+				});
+				fiosAdd.splice( ind, 1 );
+				if( indDel )
+				{ this.remove(); }
+				procCaminhos();
+			}
 		});
+		fiosAdd.push( lineProv );
 	}
 }
 
@@ -92,8 +140,6 @@ function addPorta( evt )
 		x+= ( wR / 2 );
 		y+= ( hR / 2 );
 
-		console.log( "(" + i + ", " + j + ")" );
-
 		if( optSel != null )
 		{
 			var
@@ -101,7 +147,11 @@ function addPorta( evt )
 				circ = optSel.circles,
 				obj={};
 
+			pol.name = optSel.name;
+			pol.indPorta = optSel.indPorta;
 			pol.circ = [];
+			pol.attr( 'title', optSel.name );
+			pol.attr( 'alt', optSel.name );
 			pol.obj = obj;
 			obj.poly = pol;
 			obj.portas = [];
@@ -117,8 +167,20 @@ function addPorta( evt )
 
 				if( indDel )
 				{
+					var polDel = this;
+					//Retira da lista de portas
+					portasAdd.forEach( function( porta, i )
+					{
+						if( porta.toString() == polDel.toString() )
+						{ ind = i; }
+					});
+					portasAdd.splice( ind, 1 );
+
+					//Apaga os pontinhos
 					this.circ.forEach( function( el )
 					{ el.remove(); });
+
+					//Apaga o poligono
 					this.remove();
 				}
 			});
@@ -131,6 +193,7 @@ function addPorta( evt )
 					tx = ( x - mL ),
 					ty = ( y - mT );
 
+				c.direcao = el.direcao;
 				c.dx( tx ).dy( ty );
 				
 				var
@@ -138,198 +201,46 @@ function addPorta( evt )
 					cy = c.y(),
 					ci = getCrd( mL, cx ),
 					cj = getCrd( mT, cy );
+				
+				c.x = cx;
+				c.y = cy;
+				c.i = ci;
+				c.j = cj;
 
-				console.log( el );
-				console.log( "(i,j): (" + ci + "," + cj + ")" );
+				if( c.direcao == 'in' )
+					p_in.push([ ci, cj ]);
+				else if( c.direcao == 'out' )
+					p_out.push([ ci, cj ]);
 
 				c.show();
 				pol.circ.push( c );
+				obj.portas.push( c );
 			});
-			
-			portasAdd.push({
-				tipo: optSel.name,
-				
-			});
+
+			var ind = ( obj.portas[ 0 ].i + "," + obj.portas[ 0 ].j );
+			if( optSel.name == 'in' )
+			{
+				pol.val = 0;
+				p_in[ ind ] = pol;
+				pol.click( function()
+				{
+					var val = prompt( "Insira o valor", this.val );
+					
+					this.val = ( val == true ) ? 1 : 0;
+				});
+			}
+			if( optSel.name == 'out' )
+			{
+				p_out[ ind ] = pol;
+				pol.click( function()
+				{
+					alert( this.val );
+				});
+			}
+
+			portasAdd.push( obj );
+			procResultados();
 		}
 	}
 	indAddPorta = true;
 }
-
-function resizeScreen()
-{
-	//w = spcGrad.offsetWidth - 60;
-	//h = spcGrad.offsetHeight;
-
-	grad = SVG( 'gradient-princ' ).size( w, h );
-	resizeGrid();
-}
-
-function resizeGrid()
-{
-	//Apaga tudo da tela para reinserir
-	elgrad.innerHTML = "";
-
-	//mL = mLp * fat;
-	//mT = mTp * fat;
-
-	var posX, posY;
-
-	wR = wRp * fat;
-	hR = hRp * fat;
-
-	qPh = px.value;
-	qPv = py.value;
-
-	for( i = 0; i < qPh; i++ )
-		for( j = 0; j < qPv; j++ )
-		{
-			var rect = grad.rect( wR, hR );
-
-            posX = getPos( mL, i );
-            posY = getPos( mT, j );
-
-			rect.attr({
-				fill: '#f06',
-				class: 'pin',
-				'id': ( i + '_' + j ),
-				'data-xp': i,
-				'data-yp': j
-			});
-			rect.move( posX, posY );
-			rect.click( function()
-			{
-				console.log( this );
-			});
-		}
-
-	grad.size( posX + 2 * mL, posY + 2 * mT );
-}
-
-// ( x, y ) // dá a coordenada do pino
-function getPos( m, t )
-{
-	var v = t + t;
-	v += 1;
-	return m * v;
-}
-// mL + i * mL * 2 = x
-// mL * ( 1 + i * 2 ) = x
-// mL = x / ( 1 + i * 2 )
-
-// ( i, j ) // da a coordenada cartesiana, pixels
-function getCrd( m, pos )
-{
-	var
-		v = m + m,
-		s = pos - m,
-		r = s / v;
-
-	return Math.round( r );
-}
-// x = mL + i * mL * 2
-// x - mL = i * mL * 2
-// ( x - mL ) / ( mL * 2 ) = i
-
-$( document ).ready( function()
-{
-	$( ".btn-menu-opt" ).click( function()
-	{
-		var opt = $( this ).data( "tp" );
-
-		elgrad.onclick = null;
-		selEl = null;
-		indSel = false;
-		indDel = false;
-		lineProv = linePt1 = linePt2 = null;
-		
-		switch( opt )
-		{
-			/*case 'cin':
-			case 'cout':*/
-			case 'del':
-				indDel = true;
-			break;
-			case 'sel':
-				indSel = true;
-			break;
-			case 'cline':
-				elgrad.onclick = addLine;
-			break;
-			default:
-				elgrad.onclick = addPorta;
-		}
-
-		optSel = portas[ opt ];
-		$( this ).addClass( "opt-active" );
-
-		if( selectedElement != null )
-		{ $( selectedElement ).removeClass( "opt-active" ); }
-
-		selectedElement = this;
-	});
-
-	//Criação do temporário de cada porta
-	[ 'pand', 'por', 'pnot', 'cin', 'cout' ].forEach( function( pt )
-	{
-		var pts = [];
-
-		porta = portas[ pt ];
-
-		porta.pts.forEach( function( el )
-		{
-			var
-				x = getPos( mL, el[ 0 ] ),
-				y = getPos( mT, el[ 1 ] );
-			pts.push( [ x, y ] );
-		});
-
-		var pol = grad.polygon( pts );
-		
-		porta.circles = [];
-		
-		//Bolinhas de entrada (azuis)
-		if( porta.ptin !== undefined )
-		{
-			porta.ptin.forEach( function( el )
-			{
-				var
-					pt = porta.pts[ el ],
-					x = getPos( mL, pt[ 0 ] ),
-					y = getPos( mT, pt[ 1 ] ),
-					circ = grad.circle( 5 ).fill( 'green' ).cx( x ).cy( y );
-
-				circ.direcao = 'in';
-				circ.hide();
-				porta.circles.push( circ );
-			});
-		}
-		
-		//Bolinhas de saída (verdes)
-		if( porta.ptout !== undefined )
-		{
-			var lista = Object.getOwnPropertyNames( porta.ptout );
-			lista.pop();
-
-			lista.forEach( function( el )
-			{
-				var
-					pt = porta.pts[ porta.ptout[ el ].pt ],
-					x = getPos( mL, pt[ 0 ] ),
-					y = getPos( mT, pt[ 1 ] ),
-					circ = grad.circle( 5 ).fill( 'blue' ).cx( x ).cy( y );
-
-				circ.direcao = 'out';
-				circ.hide();
-				porta.circles.push( circ );
-			});
-		}
-
-		porta.poly = pol;
-		porta.poly.hide();
-		console.log( porta );
-	});
-});
-
-//Carrega o SVG
-SVG.on( document, 'DOMContentLoaded', function()
-{ resizeScreen(); } );

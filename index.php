@@ -26,11 +26,7 @@
 						Menu
 					</a>
 					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="#">Novo</a>
-						<a class="dropdown-item" href="#">Abrir</a>
-						<a class="dropdown-item disabled" href="#">Salvar</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#">Fechar</a>
+						<a class="dropdown-item" href="index.php">Novo</a>
 					</div>
 				</li>
 				<li class="nav-item btn-menu-opt" data-tp="cin">
@@ -87,9 +83,12 @@
 	</div>
 
 	<script src="js/jquery.min.js"></script>
+	<script src="js/popper.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/portas.js"></script>
+	<script src="js/coordenadas.js"></script>
 	<script src="js/global.js"></script>
+	<script src="js/start.js"></script>
 </body>
 
 </html>

@@ -4,7 +4,7 @@ var portas = {
 		color: '#000',
 		ptin: [ 0, 4 ],
 		ptout: [
-			{ pt: 2, fn: function(){} }
+			{ pt: 2, fn: function( val1, val2 ){ return ( val1 && val2 ); } }
 		],
 		pts: [
 			[0, 0],
@@ -19,7 +19,21 @@ var portas = {
 		name: 'or',
 		color: '#CCC',
 		ptin: [ 0, 4 ],
-		ptout: [ { pt: 2, fn: function(){ return false; } } ],
+		ptout: [ { pt: 2, fn: function( val1, val2 ){ return ( val1 || val2 ); } } ],
+		pts: [
+			[0, 0],
+			[2, 0],
+			[2, 1],
+			[2, 2],
+			[0, 2],
+			[0, 1]
+		]
+	},
+	'pxor': {
+		name: 'or',
+		color: '#cc88cc',
+		ptin: [ 0, 4 ],
+		ptout: [ { pt: 2, fn: function( val1, val2 ){ return ( val1 != val2 ); } } ],
 		pts: [
 			[0, 0],
 			[2, 0],
@@ -31,9 +45,9 @@ var portas = {
 	},
 	'pnot': {
 		name: 'not',
-		color: '',
+		color: '#aa6666',
 		ptin: [ 0 ],
-		ptout: [ { pt: 3, fn: function(){} } ],
+		ptout: [ { pt: 3, fn: function( val1 ){ return !val1; } } ],
 		pts: [
 			[0, 0],
 			[0, 1],
@@ -49,7 +63,7 @@ var portas = {
 		name: 'in',
 		color: 'green',
 		ptin: [],
-		ptout: [ { pt:2, function(){ return true; } } ],
+		ptout: [ { pt:2, function( val ){ return val; } } ],
 		pts: [
 			[0,0],
 			[1,0],
